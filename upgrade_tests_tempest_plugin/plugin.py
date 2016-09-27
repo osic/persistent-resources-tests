@@ -19,7 +19,7 @@ import os
 from tempest import config
 from tempest.test_discover import plugins
 
-from openstack-upgrade-tests-repo_tempest_plugin import config as project_config
+from upgrade_tests_tempest_plugin import config as project_config
 
 
 class UpgradeTestsPlugin(plugins.TempestPlugin):
