@@ -4,6 +4,8 @@ Created on Sep 23, 2016
 @author: castulo
 '''
 from tempest.api.compute import base
+from tempest.common.dynamic_creds import DynamicCredentialProvider
+from tempest.common.cred_provider import TestResources
 from tempest import config
 from tempest import test
 
@@ -13,47 +15,38 @@ import os
 CONF = config.CONF
 
 
-class DummyTestResources(object):
+# Monkey patch the method for creating new credentials to use existing
+# credentials instead
+def _use_existing_creds(self, admin):
+    """Create credentials with an existing user.
 
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    :return: Readonly Credentials with network resources
+    """
+    # Read the files that have the existing persistent resources
+    with open('persistent.resource', 'rb') as f:
+        resources = pickle.load(f)
+    user = {'name': resources['username'], 'id': resources['user_id']}
+    project = {'name': resources['tenant_name'], 'id': resources['tenant_id']}
+    user_password = resources['password']
+    creds = self.creds_client.get_credentials(user, project, user_password)
+    return TestResources(creds)
+
+DynamicCredentialProvider._create_creds = _use_existing_creds
 
 
 class CleanupComputePersistentResources(base.BaseV2ComputeTest):
-
-    credentials = ['primary', 'admin']
 
     @classmethod
     def resource_setup(cls):
         super(CleanupComputePersistentResources, cls).resource_setup()
         # Read the files that have the existing persistent resources
-        with open('compute.resource', 'rb') as f:
-            cls.servers = pickle.load(f)
-        with open('credentials.resource', 'rb') as f:
-            credentials_list = pickle.load(f)
-        # Add the retrieved user/projects to the list of resources to be
-        # deleted
-        for credential in credentials_list:
-            cred_obj = DummyTestResources(**credential)
-            cls._creds_provider._creds.update({cred_obj.username: cred_obj})
+        with open('persistent.resource', 'rb') as f:
+            resources = pickle.load(f)
+        cls.servers.extend(resources['servers'])
+        # Remove the file with the persistent resources
+        os.remove('persistent.resource')
 
-        # Use the admin client instead of the primary user client so it
-        # can delete resources from other projects.
-        cls.servers_client = cls.os_adm.servers_client
-
-    @classmethod
-    def resource_cleanup(cls):
-        super(CleanupComputePersistentResources, cls).resource_cleanup()
-        os.remove('compute.resource')
-
-    @classmethod
-    def clear_credentials(cls):
-        # Override the parent's method to avoid deleting the credentials
-        # at the end of the test. Store them to later use instead.
-        super(CleanupComputePersistentResources, cls).clear_credentials()
-        os.remove('credentials.resource')
-
-    @test.attr(type='cleanup')
+    @test.attr(type='upgrade-cleanup')
     def test_dummy(self):
         # Dummy test needed to be able to trigger the tearDownClass
         pass
