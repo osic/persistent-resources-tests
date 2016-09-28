@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Eclipse project files
+.project
+.pydevproject
+.settings/
+
 # C extensions
 *.so
 
