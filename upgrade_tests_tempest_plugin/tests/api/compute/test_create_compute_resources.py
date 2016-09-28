@@ -24,9 +24,9 @@ class ComputePersistentResources(base.BaseV2ComputeTest):
     def resource_cleanup(cls):
         # Override the parent's method to avoid deleting the resources at
         # the end of the test. Store them in a file to be used later instead.
-        compute_base_path = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(compute_base_path, 'persistent.resource')
         try:
+            compute_base_path = os.path.dirname(os.path.abspath(__file__))
+            file_path = os.path.join(compute_base_path, 'persistent.resource')
             os.remove(file_path)
         except OSError:
             pass

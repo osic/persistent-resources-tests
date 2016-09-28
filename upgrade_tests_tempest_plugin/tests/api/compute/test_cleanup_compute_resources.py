@@ -33,10 +33,13 @@ def _use_existing_creds(self, admin):
     creds = self.creds_client.get_credentials(user, project, user_password)
     return TestResources(creds)
 
-DynamicCredentialProvider._create_creds = _use_existing_creds
-
 
 class CleanupComputePersistentResources(base.BaseV2ComputeTest):
+
+    @classmethod
+    def setup_credentials(cls):
+        DynamicCredentialProvider._create_creds = _use_existing_creds
+        super(CleanupComputePersistentResources, cls).setup_credentials()
 
     @classmethod
     def resource_setup(cls):
