@@ -4,7 +4,6 @@ Created on Sep 23, 2016
 @author: castulo
 '''
 from tempest.api.compute import base
-from tempest.common.utils import data_utils
 from tempest import config
 from tempest import test
 
