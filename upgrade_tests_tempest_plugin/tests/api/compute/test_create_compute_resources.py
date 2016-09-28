@@ -24,8 +24,10 @@ class ComputePersistentResources(base.BaseV2ComputeTest):
     def resource_cleanup(cls):
         # Override the parent's method to avoid deleting the resources at
         # the end of the test. Store them in a file to be used later instead.
+        compute_base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(compute_base_path, 'persistent.resource')
         try:
-            os.remove('persistent.resource')
+            os.remove(file_path)
         except OSError:
             pass
         cred = cls._creds_provider._creds['primary']
@@ -40,8 +42,6 @@ class ComputePersistentResources(base.BaseV2ComputeTest):
             'subnet': cred.subnet,
             'validation_resources': cls.validation_resources,
             'servers': [{'id': server['id']} for server in cls.servers]}
-        compute_base_path = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(compute_base_path, 'persistent.resource')
         with open(file_path, 'wb') as f:
             pickle.dump(resources, f)
 
