@@ -10,6 +10,7 @@ from tempest.common.utils.linux import remote_client
 from tempest import config
 from tempest import test
 
+import os
 import pickle
 
 CONF = config.CONF
@@ -23,7 +24,9 @@ def _use_existing_creds(self, admin):
     :return: Readonly Credentials with network resources
     """
     # Read the files that have the existing persistent resources
-    with open('persistent.resource', 'rb') as f:
+    compute_base_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(compute_base_path, 'persistent.resource')
+    with open(file_path, 'rb') as f:
         resources = pickle.load(f)
     user = {'name': resources['username'], 'id': resources['user_id']}
     project = {'name': resources['tenant_name'], 'id': resources['tenant_id']}
@@ -40,7 +43,9 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
     def resource_setup(cls):
         super(VerifyComputePersistentResources, cls).resource_setup()
         # Read the files that have the existing persistent resources
-        with open('persistent.resource', 'rb') as f:
+        compute_base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(compute_base_path, 'persistent.resource')
+        with open(file_path, 'rb') as f:
             cls.resources = pickle.load(f)
         cls.validation_resources = cls.resources['validation_resources']
 

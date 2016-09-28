@@ -7,8 +7,8 @@ from tempest.api.compute import base
 from tempest import config
 from tempest import test
 
-import pickle
 import os
+import pickle
 
 CONF = config.CONF
 
@@ -40,7 +40,9 @@ class ComputePersistentResources(base.BaseV2ComputeTest):
             'subnet': cred.subnet,
             'validation_resources': cls.validation_resources,
             'servers': [{'id': server['id']} for server in cls.servers]}
-        with open('persistent.resource', 'wb') as f:
+        compute_base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(compute_base_path, 'persistent.resource')
+        with open(file_path, 'wb') as f:
             pickle.dump(resources, f)
 
     @classmethod

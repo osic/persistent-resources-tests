@@ -9,8 +9,8 @@ from tempest.common.cred_provider import TestResources
 from tempest import config
 from tempest import test
 
-import pickle
 import os
+import pickle
 
 CONF = config.CONF
 
@@ -23,7 +23,9 @@ def _use_existing_creds(self, admin):
     :return: Readonly Credentials with network resources
     """
     # Read the files that have the existing persistent resources
-    with open('persistent.resource', 'rb') as f:
+    compute_base_path = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(compute_base_path, 'persistent.resource')
+    with open(file_path, 'rb') as f:
         resources = pickle.load(f)
     user = {'name': resources['username'], 'id': resources['user_id']}
     project = {'name': resources['tenant_name'], 'id': resources['tenant_id']}
@@ -40,11 +42,13 @@ class CleanupComputePersistentResources(base.BaseV2ComputeTest):
     def resource_setup(cls):
         super(CleanupComputePersistentResources, cls).resource_setup()
         # Read the files that have the existing persistent resources
-        with open('persistent.resource', 'rb') as f:
+        compute_base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(compute_base_path, 'persistent.resource')
+        with open(file_path, 'rb') as f:
             resources = pickle.load(f)
         cls.servers.extend(resources['servers'])
         # Remove the file with the persistent resources
-        os.remove('persistent.resource')
+        os.remove(file_path)
 
     @test.attr(type='upgrade-cleanup')
     def test_dummy(self):
