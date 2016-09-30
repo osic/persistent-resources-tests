@@ -16,8 +16,6 @@ import pickle
 CONF = config.CONF
 
 
-# Monkey patch the method for creating new credentials to use existing
-# credentials instead
 def _use_existing_creds(self, admin):
     """Create credentials with an existing user.
 
@@ -39,6 +37,8 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
 
     @classmethod
     def setup_credentials(cls):
+        # Monkey patch the method for creating new credentials to use
+        # existing credentials instead
         DynamicCredentialProvider._create_creds = _use_existing_creds
         super(VerifyComputePersistentResources, cls).setup_credentials()
 
@@ -80,3 +80,5 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
                     server=fetched_server,
                     servers_client=self.servers_client)
                 linux_client.validate_authentication()
+                hostname = linux_client.get_hostname()
+                self.assertEqual(fetched_server['name'].lower(), hostname)

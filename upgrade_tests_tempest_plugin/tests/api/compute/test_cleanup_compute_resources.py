@@ -15,8 +15,6 @@ import pickle
 CONF = config.CONF
 
 
-# Monkey patch the method for creating new credentials to use existing
-# credentials instead
 def _use_existing_creds(self, admin):
     """Create credentials with an existing user.
 
@@ -38,6 +36,8 @@ class CleanupComputePersistentResources(base.BaseV2ComputeTest):
 
     @classmethod
     def setup_credentials(cls):
+        # Monkey patch the method for creating new credentials to use
+        # existing credentials instead
         DynamicCredentialProvider._create_creds = _use_existing_creds
         super(CleanupComputePersistentResources, cls).setup_credentials()
 
