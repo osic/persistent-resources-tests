@@ -9,9 +9,11 @@ from tempest.common.cred_provider import TestResources
 from tempest.common.utils.linux import remote_client
 from tempest import config
 from tempest import test
+from unittest.suite import TestSuite
 
 import os
 import pickle
+import testtools
 
 CONF = config.CONF
 
@@ -31,6 +33,15 @@ def _use_existing_creds(self, admin):
     user_password = resources['password']
     creds = self.creds_client.get_credentials(user, project, user_password)
     return TestResources(creds)
+
+
+def load_tests(loader, standard_tests, pattern):
+    suite = TestSuite()
+    suite.addTest(VerifyComputePersistentResources(
+        "test_verify_persistent_servers_existance"))
+    suite.addTest(VerifyComputePersistentResources(
+        "test_can_ssh_into_persistent_servers"))
+    return suite
 
 
 class VerifyComputePersistentResources(base.BaseV2ComputeTest):
@@ -65,20 +76,30 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
         pass
 
     @test.attr(type='upgrade-verify')
-    def test_verify_persistent_servers(self):
+    def test_verify_persistent_servers_existance(self):
+        """ The persisted server(s) still exist in the environment."""
         servers = self.resources['servers']
         for server in servers:
             fetched_server = self.servers_client.show_server(
                 server['id'])['server']
             self.assertEqual(server['id'], fetched_server['id'])
-            if CONF.validation.run_validation:
-                linux_client = remote_client.RemoteClient(
-                    self.get_server_ip(fetched_server),
-                    self.ssh_user,
-                    CONF.validation.image_ssh_password,
-                    self.validation_resources['keypair']['private_key'],
-                    server=fetched_server,
-                    servers_client=self.servers_client)
-                linux_client.validate_authentication()
-                hostname = linux_client.get_hostname()
-                self.assertEqual(fetched_server['name'].lower(), hostname)
+
+    @test.attr(type='upgrade-verify')
+    @testtools.skipUnless(CONF.validation.run_validation,
+                          'Instance validation tests are disabled.')
+    def test_can_ssh_into_persistent_servers(self):
+        """ User(s) can still SSH to the persisted server(s)."""
+        servers = self.resources['servers']
+        for server in servers:
+            fetched_server = self.servers_client.show_server(
+                server['id'])['server']
+            linux_client = remote_client.RemoteClient(
+                self.get_server_ip(fetched_server),
+                self.ssh_user,
+                CONF.validation.image_ssh_password,
+                self.validation_resources['keypair']['private_key'],
+                server=fetched_server,
+                servers_client=self.servers_client)
+            linux_client.validate_authentication()
+            hostname = linux_client.get_hostname()
+            self.assertEqual(fetched_server['name'].lower(), hostname)
