@@ -75,7 +75,7 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
         # at the end of the test.
         pass
 
-    @test.attr(type='upgrade-verify')
+    @test.attr(type='persistent-verify')
     def test_verify_persistent_servers_existance(self):
         """ The persisted server(s) still exist in the environment."""
         servers = self.resources['servers']
@@ -84,7 +84,7 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
                 server['id'])['server']
             self.assertEqual(server['id'], fetched_server['id'])
 
-    @test.attr(type='upgrade-verify')
+    @test.attr(type='persistent-verify')
     @testtools.skipUnless(CONF.validation.run_validation,
                           'Instance validation tests are disabled.')
     def test_can_ssh_into_persistent_servers(self):

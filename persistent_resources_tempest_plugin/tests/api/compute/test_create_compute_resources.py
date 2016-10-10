@@ -51,7 +51,7 @@ class ComputePersistentResources(base.BaseV2ComputeTest):
         # at the end of the test.
         pass
 
-    @test.attr(type='upgrade-create')
+    @test.attr(type='persistent-create')
     def test_create_persistent_server(self):
         server = self.create_test_server(validatable=True,
                                          wait_until='ACTIVE')

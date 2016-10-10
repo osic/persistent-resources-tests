@@ -74,7 +74,7 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
         # at the end of the test.
         pass
 
-    @test.attr(type='upgrade-verify')
+    @test.attr(type='persistent-verify')
     def test_verify_persistent_container_existance(self):
         """ The persisted container(s) still exist in the environment."""
         container = self.resources['containers'][0]
@@ -82,7 +82,7 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
             container)
         self.assertHeaders(resp, 'Container', 'GET')
 
-    @test.attr(type='upgrade-verify')
+    @test.attr(type='persistent-verify')
     def test_list_persistent_container_contents(self):
         container = self.resources['containers'][0]
         object_name = self.resources['objects'][0]
@@ -90,7 +90,7 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
             container)
         self.assertEqual(object_name, object_list.strip('\n'))
 
-    @test.attr(type='upgrade-verify')
+    @test.attr(type='persistent-verify')
     def test_get_persistent_object(self):
         container = self.resources['containers'][0]
         object_name = self.resources['objects'][0]

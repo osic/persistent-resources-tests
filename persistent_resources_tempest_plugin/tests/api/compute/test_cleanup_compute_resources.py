@@ -53,7 +53,7 @@ class CleanupComputePersistentResources(base.BaseV2ComputeTest):
         # Remove the file with the persistent resources
         os.remove(file_path)
 
-    @test.attr(type='upgrade-cleanup')
+    @test.attr(type='persistent-cleanup')
     def test_dummy(self):
         # Dummy test needed to be able to trigger the tearDownClass
         pass

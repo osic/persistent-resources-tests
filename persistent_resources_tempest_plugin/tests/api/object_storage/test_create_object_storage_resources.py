@@ -67,14 +67,14 @@ class ObjectStoragePersistentResources(base.BaseObjectTest):
         # at the end of the test.
         pass
 
-    @test.attr(type='upgrade-create')
+    @test.attr(type='persistent-create')
     def test_create_persistent_container(self):
         container_name = data_utils.rand_name(name='TestContainer')
         resp, _ = self.container_client.create_container(container_name)
         self.containers.append(container_name)
         self.assertHeaders(resp, 'Container', 'PUT')
 
-    @test.attr(type='upgrade-create')
+    @test.attr(type='persistent-create')
     def test_create_persistent_object(self):
         object_name = data_utils.rand_name(name='TestObject')
         data = data_utils.arbitrary_string(15)

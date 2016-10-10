@@ -28,7 +28,7 @@ Installation
 5. pip install -e .
 
 To verify the installation was successfull, go to your tempest directory and run the following command:
- *ostestr --list | grep upgrade*
+ *ostestr --list | grep persistent*
 You should see the list of tests from the plugin.
 
 How the plugin works
@@ -44,10 +44,10 @@ The module that tears down the resources is a Tempest-like module that has the s
 Running the tests
 -----------------
 To create  test resources run this command:
- *ostestr --regex upgrade-create*
+ *ostestr --regex persistent-create*
 
 To validate the test reources run:
- *ostestr --regex upgrade-verify*
+ *ostestr --regex persistent-verify*
 
 To delete the test reources run:
- *ostestr --regex upgrade-cleanup*
+ *ostestr --regex persistent-cleanup*

@@ -59,7 +59,7 @@ class CleanupObjectStoragePersistentResources(base.BaseObjectTest):
         cls.delete_containers()
         super(CleanupObjectStoragePersistentResources, cls).resource_cleanup()
 
-    @test.attr(type='upgrade-cleanup')
+    @test.attr(type='persistent-cleanup')
     def test_dummy(self):
         # Dummy test needed to be able to trigger the tearDownClass
         pass
