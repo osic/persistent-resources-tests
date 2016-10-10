@@ -7,6 +7,7 @@ from tempest.api.compute import base
 from tempest.common.dynamic_creds import DynamicCredentialProvider
 from tempest.common.cred_provider import TestResources
 from tempest.common.utils.linux import remote_client
+from tempest.common import waiters
 from tempest import config
 from tempest import test
 from unittest.suite import TestSuite
@@ -41,6 +42,8 @@ def load_tests(loader, standard_tests, pattern):
         "test_verify_persistent_servers_existance"))
     suite.addTest(VerifyComputePersistentResources(
         "test_can_ssh_into_persistent_servers"))
+    suite.addTest(VerifyComputePersistentResources(
+        "test_suspend_resume_persistent_server"))
     return suite
 
 
@@ -103,3 +106,16 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
             linux_client.validate_authentication()
             hostname = linux_client.get_hostname()
             self.assertEqual(fetched_server['name'].lower(), hostname)
+
+    @test.attr(type='persistent-verify')
+    @testtools.skipUnless(CONF.compute_feature_enabled.suspend,
+                          'Suspend is not available.')
+    def test_suspend_resume_persistent_server(self):
+        servers = self.resources['servers']
+        for server in servers:
+            self.servers_client.suspend_server(server['id'])
+            waiters.wait_for_server_status(self.servers_client, server['id'],
+                                           'SUSPENDED')
+            self.servers_client.resume_server(server['id'])
+            waiters.wait_for_server_status(self.servers_client, server['id'],
+                                           'ACTIVE')
