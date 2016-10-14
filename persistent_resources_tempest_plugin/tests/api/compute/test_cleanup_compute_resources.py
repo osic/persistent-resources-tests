@@ -54,6 +54,6 @@ class CleanupComputePersistentResources(base.BaseV2ComputeTest):
         os.remove(file_path)
 
     @test.attr(type='persistent-cleanup')
-    def test_dummy(self):
+    def test_cleanup_compute_resources(self):
         # Dummy test needed to be able to trigger the tearDownClass
         pass
