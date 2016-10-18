@@ -1,9 +1,6 @@
-=======================
-OpenStack Upgrade Tests 
-=======================
-
-Persistent Resources Tests
---------------------------
+====================================
+OpenStack Persistent Resources Tests
+====================================
 
 The OpenStack tempest plugin for testing persistent resources during an upgrade
 
@@ -23,7 +20,7 @@ Installation
 ------------
 1.  Install Tempest 
 2.  Configure Tempest configuration file according to your OpenStack deployment
-3.  Clone the  repository into the system where you installed Tempest: git clone https://github.com/CasJ/openstack-upgrade-tests.git
+3.  Clone the  repository into the system where you installed Tempest: git clone https://github.com/osic/persistent-resources-tests.git
 4. cd openstack-upgrade-tests
 5. pip install -e .
 
