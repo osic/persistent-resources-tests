@@ -5,7 +5,7 @@ Created on Sep 23, 2016
 '''
 from tempest.api.compute import base
 from tempest.common.dynamic_creds import DynamicCredentialProvider
-from tempest.common.cred_provider import TestResources
+from tempest.lib.common.cred_provider import TestResources
 from tempest import config
 from tempest import test
 

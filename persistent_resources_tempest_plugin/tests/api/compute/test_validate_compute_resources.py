@@ -5,10 +5,10 @@ Created on Sep 26, 2016
 '''
 from tempest.api.compute import base
 from tempest.common.dynamic_creds import DynamicCredentialProvider
-from tempest.common.cred_provider import TestResources
 from tempest.common.utils.linux import remote_client
 from tempest.common import waiters
 from tempest import config
+from tempest.lib.common.cred_provider import TestResources
 from tempest import test
 from unittest.suite import TestSuite
 
