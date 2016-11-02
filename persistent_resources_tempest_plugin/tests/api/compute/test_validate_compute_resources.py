@@ -81,6 +81,8 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
     @test.attr(type='persistent-verify')
     def test_verify_persistent_servers_existance(self):
         """ The persisted server(s) still exist in the environment."""
+        self.assertTrue(self.resources['servers'],
+                        'No servers were found in the file.')
         server = self.resources['servers'][0]
         fetched_server = self.servers_client.show_server(
             server['id'])['server']
@@ -92,6 +94,8 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
                           'Instance validation tests are disabled.')
     def test_can_ssh_into_persistent_servers(self):
         """ User(s) can still SSH to the persisted server(s)."""
+        self.assertTrue(self.resources['servers'],
+                        'No servers were found in the file.')
         server = self.resources['servers'][0]
         fetched_server = self.servers_client.show_server(
             server['id'])['server']
@@ -110,6 +114,8 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
     @testtools.skipUnless(CONF.compute_feature_enabled.suspend,
                           'Suspend is not available.')
     def test_suspend_resume_persistent_server(self):
+        self.assertTrue(self.resources['servers'],
+                        'No servers were found in the file.')
         server = self.resources['servers'][0]
         self.servers_client.suspend_server(server['id'])
         waiters.wait_for_server_status(self.servers_client, server['id'],

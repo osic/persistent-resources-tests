@@ -77,6 +77,8 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
     @test.attr(type='persistent-verify')
     def test_verify_persistent_container_existance(self):
         """ The persisted container(s) still exist in the environment."""
+        self.assertTrue(self.resources['containers'],
+                        'No containers were found in the file.')
         container = self.resources['containers'][0]
         resp, _ = self.container_client.list_container_contents(
             container)
@@ -84,6 +86,8 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
 
     @test.attr(type='persistent-verify')
     def test_list_persistent_container_contents(self):
+        self.assertTrue(self.resources['containers'],
+                        'No containers were found in the file.')
         container = self.resources['containers'][0]
         object_name = self.resources['objects'][0]
         _, object_list = self.container_client.list_container_contents(
@@ -92,8 +96,14 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
 
     @test.attr(type='persistent-verify')
     def test_get_persistent_object(self):
+        self.assertTrue(self.resources['containers'],
+                        'No containers were found in the file.')
         container = self.resources['containers'][0]
+        self.assertTrue(self.resources['objects'],
+                        'No objects were found in the file.')
         object_name = self.resources['objects'][0]
+        self.assertTrue(self.resources['data'],
+                        'No object data was found in the file.')
         data = self.resources['data'][0]
         # get object
         resp, object_data = self.object_client.get_object(container,
