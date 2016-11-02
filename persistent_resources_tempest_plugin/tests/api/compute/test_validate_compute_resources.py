@@ -81,41 +81,39 @@ class VerifyComputePersistentResources(base.BaseV2ComputeTest):
     @test.attr(type='persistent-verify')
     def test_verify_persistent_servers_existance(self):
         """ The persisted server(s) still exist in the environment."""
-        servers = self.resources['servers']
-        for server in servers:
-            fetched_server = self.servers_client.show_server(
-                server['id'])['server']
-            self.assertEqual(server['id'], fetched_server['id'])
+        server = self.resources['servers'][0]
+        fetched_server = self.servers_client.show_server(
+            server['id'])['server']
+        self.assertEqual(server['id'], fetched_server['id'])
+        self.assertEqual('ACTIVE', fetched_server['status'])
 
     @test.attr(type='persistent-verify')
     @testtools.skipUnless(CONF.validation.run_validation,
                           'Instance validation tests are disabled.')
     def test_can_ssh_into_persistent_servers(self):
         """ User(s) can still SSH to the persisted server(s)."""
-        servers = self.resources['servers']
-        for server in servers:
-            fetched_server = self.servers_client.show_server(
-                server['id'])['server']
-            linux_client = remote_client.RemoteClient(
-                self.get_server_ip(fetched_server),
-                self.ssh_user,
-                CONF.validation.image_ssh_password,
-                self.validation_resources['keypair']['private_key'],
-                server=fetched_server,
-                servers_client=self.servers_client)
-            linux_client.validate_authentication()
-            hostname = linux_client.get_hostname()
-            self.assertEqual(fetched_server['name'].lower(), hostname)
+        server = self.resources['servers'][0]
+        fetched_server = self.servers_client.show_server(
+            server['id'])['server']
+        linux_client = remote_client.RemoteClient(
+            self.get_server_ip(fetched_server),
+            self.ssh_user,
+            CONF.validation.image_ssh_password,
+            self.validation_resources['keypair']['private_key'],
+            server=fetched_server,
+            servers_client=self.servers_client)
+        linux_client.validate_authentication()
+        hostname = linux_client.get_hostname()
+        self.assertEqual(fetched_server['name'].lower(), hostname)
 
     @test.attr(type='persistent-verify')
     @testtools.skipUnless(CONF.compute_feature_enabled.suspend,
                           'Suspend is not available.')
     def test_suspend_resume_persistent_server(self):
-        servers = self.resources['servers']
-        for server in servers:
-            self.servers_client.suspend_server(server['id'])
-            waiters.wait_for_server_status(self.servers_client, server['id'],
-                                           'SUSPENDED')
-            self.servers_client.resume_server(server['id'])
-            waiters.wait_for_server_status(self.servers_client, server['id'],
-                                           'ACTIVE')
+        server = self.resources['servers'][0]
+        self.servers_client.suspend_server(server['id'])
+        waiters.wait_for_server_status(self.servers_client, server['id'],
+                                       'SUSPENDED')
+        self.servers_client.resume_server(server['id'])
+        waiters.wait_for_server_status(self.servers_client, server['id'],
+                                       'ACTIVE')
