@@ -5,9 +5,16 @@ Created on Sep 23, 2016
 '''
 from tempest.api.compute import base
 from tempest.common.dynamic_creds import DynamicCredentialProvider
-from tempest.lib.common.cred_provider import TestResources
 from tempest import config
 from tempest import test
+
+# Version 14 of tempest moves cred_provider library, this allows older
+# Tempest versions to use this plugin. Older versions may be required
+# in environments using mirrored packaging repos
+try:
+    from tempest.lib.common.cred_provider import TestResources
+except ImportError:
+    from tempest.common.cred_provider import TestResources
 
 import os
 import pickle
