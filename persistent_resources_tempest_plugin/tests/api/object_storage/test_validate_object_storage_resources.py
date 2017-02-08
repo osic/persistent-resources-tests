@@ -6,9 +6,13 @@ Created on Oct 7, 2016
 from tempest.api.object_storage import base
 from tempest.common.dynamic_creds import DynamicCredentialProvider
 from tempest import config
-from tempest.lib.common.cred_provider import TestResources
 from tempest import test
 from unittest.suite import TestSuite
+
+try:
+    from tempest.lib.common.cred_provider import TestResources
+except ImportError:
+    from tempest.common.cred_provider import TestResources
 
 import os
 import pickle

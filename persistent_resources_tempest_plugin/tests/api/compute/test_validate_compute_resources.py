@@ -8,9 +8,13 @@ from tempest.common.dynamic_creds import DynamicCredentialProvider
 from tempest.common.utils.linux import remote_client
 from tempest.common import waiters
 from tempest import config
-from tempest.lib.common.cred_provider import TestResources
 from tempest import test
 from unittest.suite import TestSuite
+
+try:
+    from tempest.lib.common.cred_provider import TestResources
+except ImportError:
+    from tempest.common.cred_provider import TestResources
 
 import os
 import pickle
