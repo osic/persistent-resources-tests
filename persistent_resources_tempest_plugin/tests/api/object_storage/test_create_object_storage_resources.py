@@ -31,6 +31,10 @@ class ObjectStoragePersistentResources(base.BaseObjectTest):
         super(ObjectStoragePersistentResources, cls).resource_setup()
         cls.objects = []
         cls.object_data = []
+        # Hack to use plugin in older version of tempest
+        # in repo locked environment
+        if not hasattr(cls, 'containers'):
+            cls.containers = []
 
     @classmethod
     def resource_cleanup(cls):

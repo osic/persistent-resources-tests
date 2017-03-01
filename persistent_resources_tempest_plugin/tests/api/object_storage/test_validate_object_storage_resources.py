@@ -9,9 +9,9 @@ from tempest import config
 from tempest import test
 from unittest.suite import TestSuite
 
-# Version 14 of tempest moves cred_provider library, this allows older  
-# Tempest versions to use this plugin. Older versions may be required   
-# in environments using mirrored packaging repos  
+# Version 14 of tempest moves cred_provider library, this allows older
+# Tempest versions to use this plugin. Older versions may be required
+# in environments using mirrored packaging repos
 try:
     from tempest.lib.common.cred_provider import TestResources
 except ImportError:
@@ -99,7 +99,12 @@ class VerifyObjectStoragePersistentResources(base.BaseObjectTest):
         object_name = self.resources['objects'][0]
         _, object_list = self.container_client.list_container_contents(
             container)
-        self.assertEqual(object_name, object_list.strip('\n'))
+        if type(object_list) is str:
+            self.assertEqual(object_name, object_list.strip('\n'))
+        elif type(object_list) is list:
+            self.assertEqual(object_name, object_list[0])
+        else:
+            raise TypeError('Unexpected type of object_list: {}'.format(type(object_list)))
 
     @test.attr(type='persistent-verify')
     def test_get_persistent_object(self):
