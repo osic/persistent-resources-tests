@@ -8,9 +8,9 @@ from tempest.common.dynamic_creds import DynamicCredentialProvider
 from tempest import config
 from tempest import test
 
-# Version 14 of tempest moves cred_provider library, this allows older  
-# Tempest versions to use this plugin. Older versions may be required   
-# in environments using mirrored packaging repos  
+# Version 14 of tempest moves cred_provider library, this allows older
+# Tempest versions to use this plugin. Older versions may be required
+# in environments using mirrored packaging repos
 try:
     from tempest.lib.common.cred_provider import TestResources
 except ImportError:
@@ -56,7 +56,12 @@ class CleanupObjectStoragePersistentResources(base.BaseObjectTest):
         file_path = os.path.join(test_base_path, 'persistent.resource')
         with open(file_path, 'rb') as f:
             resources = pickle.load(f)
-        cls.containers.extend(resources['containers'])
+        # Hack to use plugin in older version of tempest
+        # in repo locked environment
+        try:
+            cls.containers.extend(resources['containers'])
+        except AttributeError:
+            cls.containers = resources["containers"]
         # Remove the file with the persistent resources
         os.remove(file_path)
 
